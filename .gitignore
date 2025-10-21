@@ -1,0 +1,52 @@
+# virtual env
+.venv/
+venv/
+env/
+ENV/
+.pytest_cache/
+
+# data
+data/
+!data/README.md
+data/raw/
+data/processed/
+
+# python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+.coverage
+.coverage.*
+.cache
+.pytest_cache
+
+# distribution
+build/
+dist/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+
+
+# jupyter
+.ipynb_checkpoints/
+*.ipynb
+!notebooks/*.ipynb
+
+
+# pytorch 
+torch_cache/
+*.pt
+*.pth
+
+# IDE
+.vscode/
+.idea/
+
+
+# os
+.DS_Store
