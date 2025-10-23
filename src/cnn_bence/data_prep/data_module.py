@@ -5,9 +5,9 @@ import torchvision.transforms as T
 from torch.utils.data import random_split, DataLoader
 
 class CIFAR10Module(L.LightningDataModule):
-    def __init__(self, batch_size=32):
+    def __init__(self, config):
         super(CIFAR10Module, self).__init__()
-        self.batch_size = batch_size
+        self.batch_size = config["data"]["batch_size"]
         self.train_transform  = T.Compose([
             T.RandomHorizontalFlip(),
             T.RandomResizedCrop((32,32)),
@@ -20,6 +20,10 @@ class CIFAR10Module(L.LightningDataModule):
         ])
 
         self.data_dir = get_project_root()/"data"
+
+        self.train = None
+        self.val = None
+        self.test = None
 
 
 
@@ -48,7 +52,8 @@ class CIFAR10Module(L.LightningDataModule):
 
 if __name__ == "__main__":
     print("Data module starting...")
-    dm = CIFAR10Module()
+    config={"data":{"batch_size": 32}}
+    dm = CIFAR10Module(config)
     dm.prepare_data()
     dm.setup(stage="fit")
     dl=dm.train_dataloader()
