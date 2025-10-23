@@ -1,5 +1,6 @@
 # Research Plan: DenseNet vs ResNet Comparison
 **Date Created:** 2025-10-21
+
 **Last Updated:** 2025-10-22
 
 
