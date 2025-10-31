@@ -6,5 +6,8 @@ def get_project_root():
     for parent in current_file.parents:
         if (parent/"pyproject.toml").exists():
             return parent
-    raise FileNotFoundError("Could not find root file pyproject.toml") 
+    raise FileNotFoundError("Could not find root file pyproject.toml")
+
+def get_data_dir():
+    return get_project_root()/"data" 
         

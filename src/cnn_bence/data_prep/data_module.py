@@ -1,13 +1,15 @@
 import lightning as L
 from torchvision.datasets.cifar import CIFAR10
-from cnn_bence.utils.paths import get_project_root
+from cnn_bence.utils.paths import get_data_dir
 import torchvision.transforms as T
 from torch.utils.data import random_split, DataLoader
 
-class CIFAR10Module(L.LightningDataModule):
+class CIFAR10DataModule(L.LightningDataModule):
     def __init__(self, config):
-        super(CIFAR10Module, self).__init__()
+        super(CIFAR10DataModule, self).__init__()
         self.batch_size = config["data"]["batch_size"]
+        self.num_workers = config["train"]["num_workers"]
+
         self.train_transform  = T.Compose([
             T.RandomHorizontalFlip(),
             T.RandomResizedCrop((32,32)),
@@ -19,7 +21,7 @@ class CIFAR10Module(L.LightningDataModule):
             T.Normalize((0.49, 0.48, 0.44), (0.25, 0.24, 0.26))
         ])
 
-        self.data_dir = get_project_root()/"data"
+        self.data_dir = get_data_dir()
 
         self.train = None
         self.val = None
@@ -41,21 +43,42 @@ class CIFAR10Module(L.LightningDataModule):
             
 
     def train_dataloader(self):
-        return DataLoader(self.train, batch_size=self.batch_size, shuffle=True, num_workers=4, pin_memory=True, persistent_workers=True)
+        return DataLoader(
+            self.train, 
+            batch_size=self.batch_size, 
+            shuffle=True, 
+            num_workers=self.num_workers, 
+            pin_memory=True, 
+            persistent_workers=True
+        )
 
     def val_dataloader(self):
-        return DataLoader(self.val, batch_size=self.batch_size, shuffle=False, num_workers=4, pin_memory=True, persistent_workers=True)
+        return DataLoader(
+            self.val, 
+            batch_size=self.batch_size, 
+            shuffle=False, 
+            num_workers=self.num_workers, 
+            pin_memory=True, 
+            persistent_workers=True
+        )
 
     def test_dataloader(self):
-        return DataLoader(self.test, batch_size=self.batch_size, shuffle=False, num_workers=4, pin_memory=True, persistent_workers=True)
+        return DataLoader(
+            self.test, 
+            batch_size=self.batch_size, 
+            shuffle=False, 
+            num_workers=self.num_workers, 
+            pin_memory=True, 
+            persistent_workers=True
+        )
     
 
-if __name__ == "__main__":
-    print("Data module starting...")
-    config={"data":{"batch_size": 32}}
-    dm = CIFAR10Module(config)
-    dm.prepare_data()
-    dm.setup(stage="fit")
-    dl=dm.train_dataloader()
-    x,y = next(iter(dl))
-    print("Data shape:", x.shape, " ", y.shape)
+# if __name__ == "__main__":
+#     print("Data module starting...")
+#     config={"data":{"batch_size": 32}}
+#     dm = CIFAR10DataModule(config)
+#     dm.prepare_data()
+#     dm.setup(stage="fit")
+#     dl=dm.train_dataloader()
+#     x,y = next(iter(dl))
+#     print("Data shape:", x.shape, " ", y.shape)

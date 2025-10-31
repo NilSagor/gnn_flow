@@ -44,8 +44,8 @@ class TransitionLayer(nn.Module):
         self.net = nn.Sequential(
             nn.BatchNorm2d(c_in),
             act_fn(),
-            nn.Conv2d(c_in, c_out, kernel_size=1, padding=1),
-            nn.AvgPool2d((2, 2))
+            nn.Conv2d(c_in, c_out, kernel_size=1, bias=False),
+            nn.AvgPool2d(kernel_size=2, stride=2)
         )
 
     def forward(self, x):
@@ -59,14 +59,15 @@ class DenseNet(nn.Module):
         c_hidden = bn_size * growth_rate
 
         self.input_net = nn.Sequential(
-            3, c_hidden, kernel_size=1, bias = False
+            nn.Conv2d(3, c_hidden, kernel_size=1, bias = False)
         )
 
         blocks = []
         for block_idx, num_layer in enumerate(num_layers):
             blocks.append(
                 DenseBlock(
-                    c_in = c_hidden + num_layer*growth_rate,
+                    c_in = c_hidden,
+                    num_layers=num_layer,
                     bn_size = bn_size,
                     growth_rate = growth_rate,
                     act_fn = act_fn
@@ -89,6 +90,7 @@ class DenseNet(nn.Module):
             nn.BatchNorm2d(c_hidden),
             act_fn(),
             nn.AdaptiveAvgPool2d((1,1)),
+            nn.Flatten(),
             nn.Linear(c_hidden, num_classes)
         )
 
